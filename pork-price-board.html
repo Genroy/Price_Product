@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ราคาสินค้าหมู · กระดานราคา</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* high-contrast, readable ink */
+    --ink:#111a24; --ink2:#3a4a5a; --muted:#5f7183; --faint:#8797a8;
+    /* fresh-market brand */
+    --brand:#0d8f6f; --brand-d:#0a7357; --brand-l:#12b389;
+    --brand-soft:#e3f6f0;
+    --up:#128a4b; --up-bg:#e6f6ed;
+    --down:#d33a2f; --down-bg:#fdeceb;
+    --flat:#6b7c8e; --flat-bg:#eef2f6;
+    --page:#f4f7f6; --card:#ffffff;
+    --line:#e6ecf1; --line2:#eef2f6;
+    --shadow:0 8px 26px rgba(20,40,55,.08);
+    --shadow-lg:0 16px 44px rgba(20,40,55,.14);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'IBM Plex Sans Thai',sans-serif; color:var(--ink);
+    background:var(--page); min-height:100vh; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1140px;margin:0 auto;padding:22px 18px 64px}
+
+  /* ---- header banner (the only colored surface) ---- */
+  header{
+    position:relative;overflow:hidden;border-radius:20px;padding:26px 28px;margin-bottom:20px;
+    background:linear-gradient(120deg,var(--brand-d) 0%,var(--brand) 48%,var(--brand-l) 100%);
+    box-shadow:var(--shadow-lg);
+    display:flex;flex-wrap:wrap;align-items:center;gap:16px 20px;
+  }
+  header::after{ /* subtle market-tile pattern, faint */
+    content:"";position:absolute;inset:0;opacity:.10;pointer-events:none;
+    background-image:linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%),
+                     linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%);
+    background-size:34px 34px;background-position:0 0,17px 17px;
+    mask-image:linear-gradient(90deg,transparent,#000 80%);
+  }
+  .logo{width:56px;height:56px;border-radius:16px;flex-shrink:0;display:grid;place-items:center;
+    background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.35);
+    color:#fff;font-family:'Anuphan';font-weight:700;font-size:1.6rem;z-index:1;
+    backdrop-filter:blur(4px)}
+  .brand{display:flex;flex-direction:column;gap:3px;z-index:1}
+  .kicker{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;
+    color:rgba(255,255,255,.9);font-weight:600}
+  h1{font-family:'Anuphan';font-weight:700;font-size:clamp(1.6rem,3.8vw,2.2rem);
+    line-height:1.1;color:#fff;letter-spacing:-.01em;text-shadow:0 2px 10px rgba(0,0,0,.12)}
+  .sub{color:rgba(255,255,255,.92);font-size:.92rem}
+  .status{margin-left:auto;text-align:right;z-index:1;color:#fff}
+  .status .live{display:inline-flex;align-items:center;gap:7px;justify-content:flex-end;
+    font-size:.78rem;color:rgba(255,255,255,.9)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#eafff6;
+    box-shadow:0 0 0 4px rgba(255,255,255,.22);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .status .clock{font-family:'IBM Plex Mono';font-size:1.15rem;font-weight:600;margin-top:2px}
+  .status .today{font-size:.74rem;color:rgba(255,255,255,.85)}
+
+  /* ---- stats (solid white cards) ---- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}
+  .stat{padding:15px 18px;border-radius:14px;background:var(--card);border:1px solid var(--line);
+    box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px}
+  .stat.total::before{background:var(--brand)}
+  .stat.up::before{background:var(--up)}
+  .stat.down::before{background:var(--down)}
+  .stat.flat::before{background:var(--flat)}
+  .stat .lab{font-size:.76rem;color:var(--muted);font-weight:500}
+  .stat .val{font-family:'IBM Plex Mono';font-weight:600;font-size:1.8rem;margin-top:4px;color:var(--ink)}
+  .stat.total .val{color:var(--brand-d)}
+  .stat.up .val{color:var(--up)} .stat.down .val{color:var(--down)} .stat.flat .val{color:var(--flat)}
+
+  /* ---- toolbar ---- */
+  .toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+  .search{position:relative;flex:1;min-width:240px}
+  .search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);
+    width:19px;height:19px;stroke:var(--muted)}
+  .search input{width:100%;padding:14px 44px 14px 46px;border-radius:13px;background:var(--card);
+    border:1.5px solid var(--line);color:var(--ink);font-family:'IBM Plex Sans Thai';
+    font-size:1rem;font-weight:500;box-shadow:var(--shadow);transition:.18s}
+  .search input::placeholder{color:var(--faint);font-weight:400}
+  .search input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px var(--brand-soft)}
+  .clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;
+    border:none;background:var(--line2);color:var(--muted);border-radius:9px;cursor:pointer;
+    font-size:1rem;line-height:1;display:none}
+  .clear.show{display:block}
+  .clear:hover{background:#e2e8ee;color:var(--ink)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-family:'Anuphan';font-weight:600;font-size:.86rem;padding:10px 17px;border-radius:12px;
+    cursor:pointer;color:var(--ink2);background:var(--card);border:1.5px solid var(--line);transition:.18s}
+  .chip:hover{border-color:var(--brand);color:var(--brand-d)}
+  .chip.on{color:#fff;border-color:transparent}
+  .chip.on[data-f="all"]{background:var(--brand)}
+  .chip.on[data-f="up"]{background:var(--up)}
+  .chip.on[data-f="down"]{background:var(--down)}
+  .chip.on[data-f="flat"]{background:var(--flat)}
+
+  .count{font-size:.86rem;color:var(--muted);margin:0 2px 12px;font-weight:500}
+  .count b{color:var(--brand-d);font-weight:700}
+
+  /* ---- table (solid, strong contrast) ---- */
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow)}
+  .scroll{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;min-width:660px}
+  thead th{position:sticky;top:0;z-index:2;background:#f2f6f4;
+    font-family:'Anuphan';font-weight:700;font-size:.84rem;color:var(--ink);
+    text-align:left;padding:15px 16px;white-space:nowrap;border-bottom:2px solid var(--line)}
+  thead th.sortable{cursor:pointer;user-select:none;transition:color .15s}
+  thead th.sortable:hover{color:var(--brand-d)}
+  thead th .ar{opacity:.35;font-size:.72rem;font-weight:400}
+  thead th.asc .ar,thead th.desc .ar{opacity:1;color:var(--brand)}
+  tbody td{padding:13px 16px;border-bottom:1px solid var(--line2);font-size:.94rem;vertical-align:middle}
+  tbody tr{transition:background .13s}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:#fafcfb}
+  tbody tr:hover{background:var(--brand-soft)}
+  .code{font-family:'IBM Plex Mono';color:var(--muted);font-size:.84rem;font-weight:500}
+  .name{font-weight:600;color:var(--ink)}
+  .price{font-family:'IBM Plex Mono';font-weight:600;font-size:1.06rem;color:var(--ink);
+    text-align:right;white-space:nowrap}
+  .num{font-family:'IBM Plex Mono';text-align:center;color:var(--ink2);font-weight:500}
+  .unit,.date{color:var(--ink2);font-size:.88rem;white-space:nowrap}
+  .delta{font-family:'IBM Plex Mono';font-weight:600;font-size:.85rem;padding:4px 11px;border-radius:9px;
+    display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  .delta.up{color:var(--up);background:var(--up-bg)}
+  .delta.down{color:var(--down);background:var(--down-bg)}
+  .delta.flat{color:var(--flat);background:var(--flat-bg)}
+  .empty{text-align:center;padding:56px 20px;color:var(--muted)}
+  .empty b{color:var(--ink);font-family:'Anuphan';display:block;margin-bottom:5px;font-size:1.15rem}
+
+  footer{text-align:center;color:var(--muted);font-size:.82rem;margin-top:30px}
+  footer span{color:var(--brand-d);font-weight:700}
+
+  @media(max-width:640px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .status{margin-left:0;width:100%;text-align:left}
+    .status .live{justify-content:flex-start}
+  }
+  @media(prefers-reduced-motion:reduce){.dot{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">CJ</div>
+    <div class="brand">
+      <div class="kicker">มาร์เก็ตราคาสินค้า</div>
+      <h1>ราคาสินค้าหมู</h1>
+      <div class="sub">ค้นหาและตรวจสอบราคาสินค้าได้ทันที</div>
+    </div>
+    <div class="status">
+      <span class="live"><span class="dot"></span>อัปเดตล่าสุด</span>
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="today" id="today"></div>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat total"><div class="lab">รายการทั้งหมด</div><div class="val" id="sTotal">0</div></div>
+    <div class="stat up"><div class="lab">ราคาปรับขึ้น</div><div class="val" id="sUp">0</div></div>
+    <div class="stat down"><div class="lab">ราคาปรับลง</div><div class="val" id="sDown">0</div></div>
+    <div class="stat flat"><div class="lab">ราคาคงที่</div><div class="val" id="sFlat">0</div></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="text" placeholder="ค้นหาชื่อสินค้า หรือ รหัสสินค้า…" autocomplete="off">
+      <button class="clear" id="clear" aria-label="ล้างคำค้นหา">✕</button>
+    </div>
+    <div class="chips">
+      <div class="chip on" data-f="all">ทั้งหมด</div>
+      <div class="chip" data-f="up">▲ ขึ้น</div>
+      <div class="chip" data-f="down">▼ ลง</div>
+      <div class="chip" data-f="flat">คงที่</div>
+    </div>
+  </div>
+
+  <div class="count">พบ <b id="cnt">0</b> รายการ</div>
+
+  <div class="panel"><div class="scroll">
+    <table id="tbl">
+      <thead><tr>
+        <th class="sortable" data-k="code">รหัส <span class="ar">↕</span></th>
+        <th class="sortable" data-k="name">ชื่อสินค้า <span class="ar">↕</span></th>
+        <th class="sortable" data-k="price" style="text-align:right">ราคา <span class="ar">↕</span></th>
+        <th class="sortable" data-k="adj">ปรับ <span class="ar">↕</span></th>
+        <th>หน่วย</th>
+        <th>วันที่มีผล</th>
+        <th style="text-align:center">น้ำหนัก/ถุง</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div></div>
+  <div class="empty" id="empty" style="display:none">
+    <b>ไม่พบสินค้า</b>ลองแก้คำค้นหา หรือกดตัวกรอง “ทั้งหมด”
+  </div>
+
+  <footer>กระดานราคาสินค้าหมู · <span>ซีเจขายของ</span> · ราคาอาจเปลี่ยนแปลงตามวันที่มีผล</footer>
+</div>
+
+<script>
+/* ---------- DATA ---------- */
+const PRICES=[
+["23068096","หมูชำแหละ รวมหัวเครื่องใน",88.5,null,"ก.ก.","21/08/26",120],
+["23068097","หมูชำแหละไม่รวมหัวเครื่องใน",96,null,"ก.ก.","21/08/26",105],
+["23068098","หมูชิ้นส่วนรวมหัวเครื่องใน",91,null,"ก.ก.","21/08/26",120],
+["23068099","หมูชิ้นส่วนไม่รวมหัวเครื่องใน",98,null,"ก.ก.","21/08/26",105],
+["23068100","หมูชิ้นส่วน 18 ชิ้นรวมหัวเครื่องใน",93,null,"ก.ก.","21/08/26",120],
+["23068101","หมูชิ้นส่วน 18 ชิ้นไม่รวมหัวเครื่องใน",100,null,"ก.ก.","21/08/26",105],
+["23082276","หมูชำแหละซี่โครงไม่รวมหัวเครื่องใน (เปิดโครง)",97,null,"ก.ก.","21/08/26",90],
+["23082275","หมูชำแหละซี่โครงรวมหัวเครื่องใน (เปิดโครง)",91,null,"ก.ก.","21/08/26",120],
+["23067917","หมูซีก (1 ซีก)",96,null,"ก.ก.","21/08/26",55],
+["23015189","เนื้อแดงหั่นชิ้น",136.5,null,"ก.ก.","25/08/26",5],
+["23000168","เนื้อขาเลาะ",113.5,null,"ก.ก.","25/08/26",5],
+["23069300","ชิ้นเนื้อหมูบดTT",125.5,null,"ก.ก.","27/08/26",5],
+["23057697","ชิ้นมันคอTT",70,-2,"ก.ก.","27/08/26",5],
+["23057673","สะโพกTT",127,null,"ก.ก.","27/08/26",9],
+["23105855","สะโพกหมู B2B (Basic)",123,null,"ก.ก.","25/08/26",10],
+["23015177","สะโพกแต่ง",127.5,null,"ก.ก.","25/08/26",10],
+["23000130","สะโพกติดหนัง",117.5,null,"ก.ก.","25/08/26",10],
+["23057675","สันในTT",125.5,null,"ก.ก.","27/08/26",5],
+["23057676","สันคอTT",159.5,null,"ก.ก.","27/08/26",6],
+["23057674","สันนอกTT",131,null,"ก.ก.","27/08/26",5],
+["23105856","สันนอกหมู B2B (Basic)",126,null,"ก.ก.","25/08/26",12],
+["23039061","สามชั้นติดสันนอกติดหนัง",159.5,null,"ก.ก.","25/08/26",15],
+["23089787","สามชั้นติดสันนอกติดหนังเลาะซี่โครง",151.5,null,"ก.ก.","25/08/26",15],
+["23057677","สามชั้นTT",169.5,null,"ก.ก.","27/08/26",7],
+["23096254","สามชั้นTT(XL)",169.5,null,"ก.ก.","27/08/26",10],
+["23045011","สามชั้นแต่ง(Size S)",160,null,"ก.ก.","27/08/26",10],
+["23057700","ซี่โครงTT",149.5,null,"ก.ก.","25/08/26",5],
+["23057678","ซี่โครงแผ่นTT",146.5,null,"ก.ก.","27/08/26",5],
+["23015265","ซี่โครงหั่นชิ้น",150.5,null,"ก.ก.","25/08/26",5],
+["23000127","เนื้อไหล่ติดหนัง",115.5,null,"ก.ก.","25/08/26",8],
+["23057672","ไหล่TT",124.5,null,"ก.ก.","27/08/26",5],
+["23105854","ไหล่หมู B2B (Basic)",120.5,null,"ก.ก.","25/08/26",10],
+["23063342","ไหล่บดTT",127,null,"ก.ก.","25/08/26",5],
+["23057671","คอหมูย่างTT",238.5,null,"ก.ก.","27/08/26",5],
+["23057698","หมูบดTT",123,null,"ก.ก.","27/08/26",5],
+["23039556","หมูบดปนมัน 30 %",110.5,null,"ก.ก.","26/08/26",5],
+["23057696","เศษมันTT",52.5,2,"ก.ก.","27/08/26",5],
+["23000203","ชิ้นมันแข็ง",37,null,"ก.ก.","27/08/26",5],
+["23067921","เศษมันติดหนังTT",38,null,"ก.ก.","27/08/26",5],
+["23063344","เศษหนังTT",41,null,"ก.ก.","27/08/26",5],
+["23045518","มันเปลว เบอร์ 1",34,null,"ก.ก.","27/08/26",5],
+["23057691","มันเปลวTT",37,2,"ก.ก.","27/08/26",5],
+["23057685","มันแข็งTT",50.5,-2,"ก.ก.","27/08/26",5],
+["23064091","มันแข็งติดหนัง TT",50.5,null,"ก.ก.","27/08/26",5],
+["23057695","มันท้องTT",39,null,"ก.ก.","27/08/26",5],
+["23057684","มันสันหลังTT",59.5,null,"ก.ก.","27/08/26",5],
+["23057686","หนังสันหลังTT",110,null,"ก.ก.","27/08/26",5],
+["23057687","หนังหมูรวมTT",76,1,"ก.ก.","27/08/26",5],
+["23000175","หน้ากากหมู",61,null,"ก.ก.","27/08/26",5],
+["23015390","เลือดหมูสด",19.25,null,"ก.ก.","27/08/26",5],
+["23067920","เลือดก้อนTT",23.5,null,"ก้อน","27/08/26",2],
+["23066316","กระโหลกหมูเลาะ",8,null,"ก.ก.","27/08/26",5],
+["23057693","กระดูกแว่นTT",19,null,"ก.ก.","27/08/26",5],
+["23057689","กระดูกข้อTT",6,null,"ก.ก.","27/08/26",5],
+["23000167","กระดูกขาเลาะ",10,null,"ก.ก.","27/08/26",5],
+["23057688","กระดูกซุปTT",47,null,"ก.ก.","27/08/26",5],
+["23057702","กระดูกอกTT",65,1,"ก.ก.","27/08/26",5],
+["23057690","กระดูกอ่อนTT",181,null,"ก.ก.","27/08/26",5],
+["23057679","ขาน้ำTT",69.5,null,"ก.ก.","27/08/26",5],
+["23063196","ขาหน้าเผาTT",75,null,"ก.ก.","27/08/26",5],
+["23019171","ขาหน้าเผาแบ่งคากิ",73,null,"ก.ก.","25/08/26",10],
+["23072463","ขาหมูเลาะติดหนัง",107.5,null,"ก.ก.","25/08/26",5],
+["23057680","ขาหลังTT",78.5,null,"ก.ก.","27/08/26",5],
+["23063197","ขาหลังเผาTT",81.5,null,"ก.ก.","27/08/26",5],
+["23015313","คากิ",41.5,2,"ก.ก.","27/08/26",5],
+["23014036","คากิเผา",32,-2,"ก.ก.","27/08/26",5],
+["23057681","หางหมูTT",53.5,null,"ก.ก.","27/08/26",5],
+["23015321","หัวติดลิ้น",33,null,"ก.ก.","27/08/26",8],
+["23050485","หัวติดลิ้น-K",47,null,"ก.ก.","27/08/26",6],
+["23000190","หัวใจหมู",51.5,-2,"ก.ก.","27/08/26",2],
+["23107368","เครื่องในชุด(หมู)",44.5,null,"ก.ก.","27/08/26",13],
+["23000194","ไตหมู",20,null,"ก.ก.","27/08/26",2],
+["23015350","ไส้ใหญ่",24.5,null,"ก.ก.","27/08/26",5],
+["23000192","ไส้ใหญ่(ลวก)",38,null,"ก.ก.","27/08/26",2],
+["23000181","ไส้ขม",30,null,"ก.ก.","27/08/26",2],
+["23015346","ไส้ตัน",113.5,null,"ก.ก.","27/08/26",2],
+["23014042","ไส้ตันลวก",164,null,"ก.ก.","27/08/26",2],
+["23000191","ไส้อ่อน",159.5,null,"ก.ก.","27/08/26",2],
+["23000189","กระเพาะ",37,null,"ก.ก.","27/08/26",2],
+["23015342","กระเพาะลวก",51,null,"ก.ก.","27/08/26",2],
+["23000186","ขั้วตับหมู",152,-2,"ก.ก.","27/08/26",2],
+["23000188","ตับหมู",87.5,1,"ก.ก.","27/08/26",2],
+["23000187","ปอด",9.5,null,"ก.ก.","27/08/26",2],
+["23000193","ม้าม",58,null,"ก.ก.","27/08/26",2],
+["23000172","ลิ้นหมู",137.5,null,"ก.ก.","27/08/26",2],
+["23078867","เศษสามชั้นสไลด์",95.5,2,"ก.ก.","27/08/26",5],
+["23065140","สะโพกสไลด์",138.5,null,"ก.ก.","25/08/26",5],
+["23065142","สันคอสไลด์",174,null,"ก.ก.","25/08/26",5],
+["23065141","สันนอกสไลด์",146.5,null,"ก.ก.","25/08/26",5],
+["23065143","สามชั้นสไลด์",186.5,null,"ก.ก.","25/08/26",5],
+["23086963","เนื้อไหล่แต่งตัดชิ้น SIS กก.ละ",128.5,null,"ก.ก.","25/08/26",3],
+["23095309","ขาหมูเผาสไลซ์ SIS กก.ละ",80.5,null,"ก.ก.","25/08/26",3],
+["23086962","คอหมูย่างแต่ง SIS กก.ละ",240.5,null,"ก.ก.","25/08/26",3],
+["23086969","ซี่โครงแข็งตัดเส้น 2 นิ้ว SIS กก.ละ",149.5,null,"ก.ก.","25/08/26",3],
+["23086970","ซี่โครงอ่อนแผ่น 3 นิ้ว SIS กก.ละ",174.5,null,"ก.ก.","25/08/26",3],
+["23086964","สะโพกแต่งตัดชิ้น SIS กก.ละ",131,null,"ก.ก.","25/08/26",3],
+["23086966","สันในแต่ง SIS กก.ละ",127.5,null,"ก.ก.","25/08/26",3],
+["23086967","สันคอแต่งตัดชิ้น SIS กก.ละ",165,null,"ก.ก.","25/08/26",3],
+["23086965","สันนอกแต่งตัดชิ้น SIS กก.ละ",133.5,null,"ก.ก.","25/08/26",3],
+["23086968","สามชั้นตัดเส้น SIS กก.ละ",173.5,null,"ก.ก.","25/08/26",3],
+["23090969","หมูบด SIS กก.ละ",123.5,null,"ก.ก.","25/08/26",3],
+["23084674","เลือดหมูก้อนปรุงรสพาสเจอร์ไรซ์400กรัม-C",13.25,null,"ก.ก.","01/09/26",1],
+].map(r=>({code:r[0],name:r[1],price:r[2],adj:r[3],unit:r[4],date:r[5],wt:r[6]}));
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const fmt=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+/* ---------- clock ---------- */
+function tick(){
+  const d=new Date();
+  $("#clock").textContent=d.toLocaleTimeString('th-TH',{hour12:false});
+  $("#today").textContent=d.toLocaleDateString('th-TH',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+}
+setInterval(tick,1000);tick();
+
+/* ---------- price board ---------- */
+let filter='all', sortK=null, sortDir=1;
+function render(){
+  const q=$("#q").value.trim().toLowerCase();
+  $("#clear").classList.toggle('show',q.length>0);
+  let rows=PRICES.filter(r=>{
+    if(filter==='up'&&!(r.adj>0))return false;
+    if(filter==='down'&&!(r.adj<0))return false;
+    if(filter==='flat'&&r.adj!=null)return false;
+    if(q&&!(r.name.toLowerCase().includes(q)||r.code.includes(q)))return false;
+    return true;
+  });
+  if(sortK){
+    rows=[...rows].sort((a,b)=>{
+      let x=a[sortK],y=b[sortK];
+      if(sortK==='adj'){x=x??0;y=y??0;}
+      if(typeof x==='string')return x.localeCompare(y,'th')*sortDir;
+      return (x-y)*sortDir;
+    });
+  }
+  const tb=$("#tbody");tb.innerHTML="";
+  rows.forEach(r=>{
+    let d;
+    if(r.adj>0)d=`<span class="delta up">▲ +${fmt(r.adj)}</span>`;
+    else if(r.adj<0)d=`<span class="delta down">▼ ${fmt(r.adj)}</span>`;
+    else d=`<span class="delta flat">–</span>`;
+    tb.insertAdjacentHTML('beforeend',
+      `<tr><td class="code">${r.code}</td><td class="name">${r.name}</td>
+       <td class="price">${fmt(r.price)}</td><td>${d}</td>
+       <td class="unit">${r.unit}</td><td class="date">${r.date}</td>
+       <td class="num">${r.wt}</td></tr>`);
+  });
+  $("#empty").style.display=rows.length?'none':'block';
+  $("#cnt").textContent=rows.length;
+}
+function stats(){
+  $("#sTotal").textContent=PRICES.length;
+  $("#sUp").textContent=PRICES.filter(r=>r.adj>0).length;
+  $("#sDown").textContent=PRICES.filter(r=>r.adj<0).length;
+  $("#sFlat").textContent=PRICES.filter(r=>r.adj==null).length;
+}
+$("#q").oninput=render;
+$("#clear").onclick=()=>{$("#q").value="";render();$("#q").focus();};
+document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on');filter=c.dataset.f;render();
+});
+document.querySelectorAll('th.sortable').forEach(th=>th.onclick=()=>{
+  const k=th.dataset.k;
+  if(sortK===k)sortDir*=-1;else{sortK=k;sortDir=1;}
+  document.querySelectorAll('th.sortable').forEach(x=>x.classList.remove('asc','desc'));
+  th.classList.add(sortDir>0?'asc':'desc');
+  render();
+});
+stats();render();
+</script>
+</body>
+</html>
