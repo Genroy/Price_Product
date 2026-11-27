@@ -95,12 +95,15 @@ footer{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
 .pic .trk{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}.pic .trk::-webkit-scrollbar{display:none}.pic .trk img{flex:0 0 100%;scroll-snap-align:center}.pic:hover img{transform:none}.no,.new{pointer-events:none}
 @supports not (aspect-ratio:1){.pic{height:0;padding-top:102%}.pic .trk{position:absolute;top:0;left:0;width:100%;height:100%}}
 .pic .trk{scroll-behavior:smooth}
+.hero .hrow{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:26px}
+.hero .hl{position:static}.hero .tag{font-size:13px;padding:7px 13px}
+.hero .lang{background:rgba(0,0,0,.3);border-color:rgba(255,255,255,.3)}.hero .lang button{color:#fff}
+.hint{margin:0 0 12px;font-size:13px;color:var(--mute)}
 </style>
 </head>
 <body>
-<header class="hero"><div class="lang hl"></div><div class="wrap">
+<header class="hero"><div class="wrap hrow"><span class="tag" data-t="tag"></span><div class="lang hl"></div></div><div class="wrap">
  <div>
-  <span class="tag" data-t="tag"></span>
   <h1 data-t="h1"></h1>
   <p class="by">By <b>เพ็ญลักษณ์ Penluck</b></p>
   <p class="lead" data-t="lead"></p>
@@ -120,7 +123,7 @@ footer{padding-bottom:calc(100px + env(safe-area-inset-bottom,0px))}
 <div class="cta on" id="cta"></div></footer>
 <a class="fab" id="fab" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
 <button class="cbar" id="cbar"><span></span><b></b></button>
-<div class="sheet" id="sheet"><div class="sp"><div class="sh"><h3></h3><button class="cls" aria-label="Close">✕</button></div><ul></ul><div class="sa"><button class="clr"></button><button class="send"></button></div></div></div>
+<div class="sheet" id="sheet"><div class="sp"><div class="sh"><h3></h3><button class="cls" aria-label="Close">✕</button></div><ul></ul><p class="hint"></p><div class="sa"><button class="clr"></button><button class="send"></button></div></div></div>
 <div class="toast" id="toast"></div>
 <div class="lb" id="lb"><img alt=""></div>
 <script>
@@ -134,12 +137,12 @@ var T={
 th:[["องุ่นไร้ออส","ป้ายยาวตราช้าง",["น้ำหนักเนื้อ 5.5 กก."]],["องุ่นคิมสันไร้เม็ด","ป้ายใหญ่ตราช้าง",["ตะกร้าดำ","น้ำหนักเนื้อ 5.5 กก."]],["แอปเปิ้ลฟูจิ","Fuji Apple",["กล่องชมพู 898"]],["แอปเปิ้ลฟูจิ","Fuji Apple",["กล่องแดง 789","เบอร์ #36"]],["มันหวานญี่ปุ่น","สายพันธุ์เบนิฮารุกะ",["Size M","น้ำหนัก 3 กก."]],["ส้มเอหิเมะ","Red Beauty Mandarin",["แพ็ก 2 กก."],"ตู้เข้าใหม่"],["แอปเปิ้ลเขียว","Green Apple",["เบอร์ #100"]],["แอปเปิ้ลฟูจิ","Fuji Apple",["กล่องขาวแดง","เบอร์ #88 / #100"]],["ส้มเลม่อน","ตราช้างล้านนา",["Size #88"]],["สาลี่น้ำผึ้ง","เบอร์ #36",["กล่องขาวน้ำเงิน"]],["ส้มจุก","ตราแมว",["หวานมาก","แพ็กเกจพร้อมถุงหิ้ว","น้ำหนัก 3 กก.","ประมาณ 14-15 ลูก"]],["ส้ม Navel","เบอร์ #64",["รสหวานหอม","น้ำหนัก 16 กก."]]],
 lo:[["ອະງຸ່ນໄຮ້ອອສ","ປ້າຍຍາວ ຕາຊ້າງ",["ນ້ຳໜັກເນື້ອ 5.5 ກກ."]],["ອະງຸ່ນຄິມສັນ ບໍ່ມີເມັດ","ປ້າຍໃຫຍ່ ຕາຊ້າງ",["ກະຕ່າສີດຳ","ນ້ຳໜັກເນື້ອ 5.5 ກກ."]],["ແອັບເປິ້ນຟູຈິ","Fuji Apple",["ກ່ອງສີຊົມພູ 898"]],["ແອັບເປິ້ນຟູຈິ","Fuji Apple",["ກ່ອງສີແດງ 789","ເບີ #36"]],["ມັນຫວານຍີ່ປຸ່ນ","ສາຍພັນເບນິຮາຣຸກະ",["Size M","ນ້ຳໜັກ 3 ກກ."]],["ໝາກກ້ຽງເອຮິເມະ","Red Beauty Mandarin",["ແພັກ 2 ກກ."],"ຕູ້ໃໝ່ມາແລ້ວ"],["ແອັບເປິ້ນຂຽວ","Green Apple",["ເບີ #100"]],["ແອັບເປິ້ນຟູຈິ","Fuji Apple",["ກ່ອງຂາວແດງ","ເບີ #88 / #100"]],["ໝາກເລມ່ອນ","ຕາຊ້າງລ້ານນາ",["Size #88"]],["ໝາກແພນ້ຳເຜິ້ງ","ເບີ #36",["ກ່ອງຂາວ-ນ້ຳເງິນ"]],["ໝາກກ້ຽງຈຸກ","ຕາແມວ",["ຫວານຫຼາຍ","ແພັກເກັດພ້ອມຖົງຫິ້ວ","ນ້ຳໜັກ 3 ກກ.","ປະມານ 14-15 ໜ່ວຍ"]],["ໝາກກ້ຽງ Navel","ເບີ #64",["ຫວານຫອມ","ນ້ຳໜັກ 16 ກກ."]]],
 zh:[["葡萄（ไร้ออส）","长标签 大象牌",["净重 5.5 公斤"]],["克伦生无籽葡萄","大标签 大象牌",["黑色篮装","净重 5.5 公斤"]],["富士苹果","Fuji Apple",["粉色箱 898"]],["富士苹果","Fuji Apple",["红色箱 789","规格 #36"]],["日本红薯","Beni Haruka（紅はるか）",["M 号","重量 3 公斤"]],["爱媛柑橘","Red Beauty Mandarin",["每包 2 公斤"],"新货到"],["青苹果","Green Apple",["规格 #100"]],["富士苹果","Fuji Apple",["红白箱","规格 #88 / #100"]],["柠檬","兰那大象牌",["规格 #88"]],["蜜梨","规格 #36",["白蓝箱"]],["凸顶柑","猫咪牌",["非常甜","附手提袋包装","重量 3 公斤","约 14-15 个"]],["脐橙","规格 #64",["香甜","重量 16 公斤"]]]};
-var WA_NUM="66999056991",UPDATED="2026 November"; // ใส่เบอร์ WhatsApp พร้อมรหัสประเทศ เช่น 85620xxxxxxxx เพื่อให้ข้อความสั่งซื้อขึ้นในแชทอัตโนมัติ
+var WA_NUM="66999056991",UPDATED="2026-11"; // ใส่เบอร์ WhatsApp พร้อมรหัสประเทศ เช่น 85620xxxxxxxx เพื่อให้ข้อความสั่งซื้อขึ้นในแชทอัตโนมัติ
 var WAL=WA_NUM?"https://wa.me/"+WA_NUM:WA;
 var UX={
-th:{share:"🔗 แชร์",copied:"คัดลอกลิงก์แล้ว",pick:"＋ เลือก",picked:"✓ เลือกแล้ว",askNow:"💬 ถามเลย",ph:"ค้นหาผลไม้…",none:"ไม่พบสินค้าที่ค้นหา",list:"รายการที่สนใจ",view:"ดูรายการ",send:"ส่งทาง WhatsApp",clear:"ล้างรายการ",empty:"ยังไม่ได้เลือกสินค้า",copiedMsg:"คัดลอกข้อความแล้ว วางในแชทได้เลย",head:"สวัสดี สนใจสินค้าดังนี้ รบกวนแจ้งราคาด้วย:",upd:"อัปเดตล่าสุด ",loc:"th-TH"},
-lo:{share:"🔗 ແບ່ງປັນ",copied:"ສຳເນົາລິ້ງແລ້ວ",pick:"＋ ເລືອກ",picked:"✓ ເລືອກແລ້ວ",askNow:"💬 ຖາມເລີຍ",ph:"ຄົ້ນຫາໝາກໄມ້…",none:"ບໍ່ພົບສິນຄ້າທີ່ຄົ້ນຫາ",list:"ລາຍການທີ່ສົນໃຈ",view:"ເບິ່ງລາຍການ",send:"ສົ່ງທາງ WhatsApp",clear:"ລ້າງລາຍການ",empty:"ຍັງບໍ່ໄດ້ເລືອກສິນຄ້າ",copiedMsg:"ສຳເນົາຂໍ້ຄວາມແລ້ວ ວາງໃນແຊັດໄດ້ເລີຍ",head:"ສະບາຍດີ ສົນໃຈສິນຄ້າດັ່ງນີ້ ກະລຸນາແຈ້ງລາຄາແດ່:",upd:"ອັບເດດຫຼ້າສຸດ ",loc:"lo-LA-u-ca-gregory"},
-zh:{share:"🔗 分享",copied:"链接已复制",pick:"＋ 选择",picked:"✓ 已选",askNow:"💬 立即咨询",ph:"搜索水果…",none:"没有找到相关商品",list:"感兴趣的商品",view:"查看清单",send:"通过 WhatsApp 发送",clear:"清空清单",empty:"还没有选择商品",copiedMsg:"消息已复制，可直接粘贴到聊天中",head:"您好，我对以下商品感兴趣，请告知价格：",upd:"最近更新 ",loc:"zh-CN"}};
+th:{share:"🔗 แชร์",copied:"คัดลอกลิงก์แล้ว",pick:"＋ เลือก",picked:"✓ เลือกแล้ว",askNow:"💬 ถามเลย",ph:"ค้นหาผลไม้…",none:"ไม่พบสินค้าที่ค้นหา",list:"รายการที่สนใจ",view:"ดูรายการ",send:"ส่งทาง WhatsApp",clear:"ล้างรายการ",empty:"ยังไม่ได้เลือกสินค้า",copiedMsg:"คัดลอกข้อความแล้ว วางในแชทได้เลย",head:"สวัสดี สนใจสินค้าดังนี้ รบกวนแจ้งราคาด้วย:",hint:"WhatsApp จะเปิดพร้อมข้อความที่เลือกไว้ แค่แตะปุ่มส่งอีกครั้งเดียว",upd:"อัปเดตล่าสุด ",loc:"th-TH"},
+lo:{share:"🔗 ແບ່ງປັນ",copied:"ສຳເນົາລິ້ງແລ້ວ",pick:"＋ ເລືອກ",picked:"✓ ເລືອກແລ້ວ",askNow:"💬 ຖາມເລີຍ",ph:"ຄົ້ນຫາໝາກໄມ້…",none:"ບໍ່ພົບສິນຄ້າທີ່ຄົ້ນຫາ",list:"ລາຍການທີ່ສົນໃຈ",view:"ເບິ່ງລາຍການ",send:"ສົ່ງທາງ WhatsApp",clear:"ລ້າງລາຍການ",empty:"ຍັງບໍ່ໄດ້ເລືອກສິນຄ້າ",copiedMsg:"ສຳເນົາຂໍ້ຄວາມແລ້ວ ວາງໃນແຊັດໄດ້ເລີຍ",head:"ສະບາຍດີ ສົນໃຈສິນຄ້າດັ່ງນີ້ ກະລຸນາແຈ້ງລາຄາແດ່:",hint:"WhatsApp ຈະເປີດພ້ອມຂໍ້ຄວາມທີ່ເລືອກໄວ້ ພຽງແຕະປຸ່ມສົ່ງອີກຄັ້ງດຽວ",upd:"ອັບເດດຫຼ້າສຸດ ",loc:"lo-LA-u-ca-gregory"},
+zh:{share:"🔗 分享",copied:"链接已复制",pick:"＋ 选择",picked:"✓ 已选",askNow:"💬 立即咨询",ph:"搜索水果…",none:"没有找到相关商品",list:"感兴趣的商品",view:"查看清单",send:"通过 WhatsApp 发送",clear:"清空清单",empty:"还没有选择商品",copiedMsg:"消息已复制，可直接粘贴到聊天中",head:"您好，我对以下商品感兴趣，请告知价格：",hint:"WhatsApp 会带着所选内容打开，只需再点一下发送",upd:"最近更新 ",loc:"zh-CN"}};
 Object.keys(UX).forEach(function(l){for(var k in UX[l])UI[l][k]=UX[l][k]});
 var NAMES={th:"ไทย",lo:"ລາວ",zh:"中文"},LG="lo",CAT="all",Q="",SEL=[],first=true;
 try{var sv=localStorage.getItem("lg");if(sv&&UI[sv])LG=sv}catch(e){}
@@ -156,7 +159,7 @@ function toggle(i){var k=SEL.indexOf(i);if(k<0)SEL.push(i);else SEL.splice(k,1);
 function msg(){return UI[LG].head+"\n"+SEL.map(function(i){var t=T[LG][i];return"#"+(i+1)+" "+t[0]+" ("+t[1]+(t[2].length?", "+t[2].join(", "):"")+")"}).join("\n")}
 function cartR(){
  cbar.className="cbar"+(SEL.length?" on":"");cbar.children[0].textContent=UI[LG].list+" ("+SEL.length+")";cbar.children[1].textContent=UI[LG].view;
- sheet.querySelector("h3").textContent=UI[LG].list;sheet.querySelector(".send").textContent=UI[LG].send;sheet.querySelector(".clr").textContent=UI[LG].clear;
+ sheet.querySelector("h3").textContent=UI[LG].list;sheet.querySelector(".send").textContent=UI[LG].send;sheet.querySelector(".hint").textContent=WA_NUM?UI[LG].hint:"";sheet.querySelector(".clr").textContent=UI[LG].clear;
  var ul=sheet.querySelector("ul");ul.innerHTML=SEL.length?"":"<li>"+UI[LG].empty+"</li>";
  SEL.forEach(function(i){var li=document.createElement("li"),t=T[LG][i];li.innerHTML="<span>#"+(i+1)+" "+t[0]+" <small>"+t[1]+"</small></span>";var x=document.createElement("button");x.textContent="✕";x.setAttribute("aria-label","Remove");x.onclick=function(){toggle(i)};li.appendChild(x);ul.appendChild(li)})}
 function send(){var m=msg();if(WA_NUM){window.open("https://wa.me/"+WA_NUM+"?text="+encodeURIComponent(m),"_blank")}else{copy(m);toast(UI[LG].copiedMsg);window.open(WAL,"_blank")}}
